@@ -1,5 +1,6 @@
 package com.dam.project.engine;
 
+import com.dam.project.entities.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -7,15 +8,12 @@ import javafx.scene.paint.Color;
 public class GameLoop extends AnimationTimer {
 
     private final GraphicsContext gc;
-
+    private final Player player;
     private long lastFrame = 0;
 
-    // ejemplo de "estado del mundo": un cuadrado rojo que se mueve
-    private double x = 100;
-    private double speed = 200; // píxeles por segundo
-
-    public GameLoop(GraphicsContext gc) {
+    public GameLoop(GraphicsContext gc, Player player) {
         this.gc = gc;
+        this.player = player;
     }
 
     @Override
@@ -25,21 +23,16 @@ public class GameLoop extends AnimationTimer {
             return;
         }
 
-        // delta time en segundos (tiempo entre frames)
         double delta = (now - lastFrame) / 1_000_000_000.0;
         lastFrame = now;
 
-        // lógica de juego
-        x += speed * delta;
-        if (x > 800) {
-            x = 0;
-        }
+        // actualizar jugador
+        player.update(delta);
 
         // render
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, 800, 600);
 
-        gc.setFill(Color.RED);
-        gc.fillRect(x, 300, 50, 50);
+        player.render(gc);
     }
 }
